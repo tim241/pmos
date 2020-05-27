@@ -1,0 +1,62 @@
+# Reference: <https://postmarketos.org/vendorkernel>
+# Kernel config based on: arch/arm64/configs/(CHANGEME!)
+
+pkgname=linux-samsung-gta3xlwifi
+pkgver=4.4.111
+pkgrel=0
+pkgdesc="Samsung Galaxy Tab A 10.1 (2019) kernel fork"
+arch="aarch64"
+_carch="arm64"
+_flavor="samsung-gta3xlwifi"
+url="https://kernel.org"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps pmb:cross-native"
+makedepends="gcc4 bash bc bison devicepkg-dev flex openssl-dev perl linux-headers"
+
+# Compiler: this kernel was only tested with GCC6. Feel free to make a merge
+# request if you find out that it is booting working with newer GCCs as
+# well. See <https://postmarketos.org/vendorkernel> for instructions.
+if [ "${CC:0:5}" != "gcc6-" ]; then
+	CC="gcc4-$CC"
+	HOSTCC="gcc4-gcc"
+	CROSS_COMPILE="gcc4-$CROSS_COMPILE"
+fi
+
+# Source
+_repository="android_kernel_samsung_gta3xlwifi"
+_commit="fdd446cb7c44812ef1b616293393d145efe53c5c"
+_config="config-$_flavor.$arch"
+source="
+	$pkgname-$_commit.tar.gz::https://github.com/tim241/$_repository/archive/$_commit.tar.gz
+	$_config
+	01-gcc8-fix-put-user.patch
+	02-remove_ANDROID_MAJOR_VERSION.patch
+	03-fix_uh_S.patch
+	04-fix_CONN_GADGET_IOCTL_MAGIC_SIG_undefined.patch
+	05-fix_firmware_MakeFile.patch
+"
+builddir="$srcdir/$_repository-$_commit"
+_outdir="out"
+
+prepare() {
+	default_prepare
+	. downstreamkernel_prepare
+}
+
+build() {
+	unset LDFLAGS
+	make O="$_outdir" ARCH="$_carch" CC="${CC:-gcc}" \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-postmarketOS"
+}
+
+package() {
+	downstreamkernel_package "$builddir" "$pkgdir" "$_carch" "$_flavor" "$_outdir"
+}
+
+sha512sums="acafff12a3360316c54e285f952b768eede9398c2ba92cb2364d0dbe615c808be689e8198a1d2789d6647baeb5a487eff68c20a6ce768654a0a08ee31c91fae1  linux-samsung-gta3xlwifi-fdd446cb7c44812ef1b616293393d145efe53c5c.tar.gz
+a50272fc77b882ea1ada3d5fdf932b2e3b4fa092ef49986c0ae154e4169e8eedf6bba2a3bbe50ee945364be0f79ef1d9eb429d10fbd758dbf327d650fceac438  config-samsung-gta3xlwifi.aarch64
+197d40a214ada87fcb2dfc0ae4911704b9a93354b75179cd6b4aadbb627a37ec262cf516921c84a8b1806809b70a7b440cdc8310a4a55fca5d2c0baa988e3967  01-gcc8-fix-put-user.patch
+868077033f85a4997b6779448cd8b3cec2d4d38af76dcb8dfb1865154399463e6a13285f18f44f4850c4aed52eb4d039b8795576bd7cf75f8ebbc340074667f7  02-remove_ANDROID_MAJOR_VERSION.patch
+ac0be215981bfe204d475d5b0240756a9012a4a4aa7576c10c7418ab9d57b01e1a182b2ed161a13797e6c5a35c7804faaed0ac102572b8ba26f8a773fcc7a686  03-fix_uh_S.patch
+6f746cc7c86412e0bfb8de3fd98561d71fb2f085d0bf49cc3cb7547a6177af862eac512b149b5294c120d56d9a5e67691395c194c315ee7c2f97e59a06e1088b  04-fix_CONN_GADGET_IOCTL_MAGIC_SIG_undefined.patch
+bdd58ad829edc57c087c7998f729cbc9ab3d3de82cfb890d32d224a7efd74a08aa0331fded8d1fac59a921856ad1709cdda86d80d138fd8e072ceffce7c97f2f  05-fix_firmware_MakeFile.patch"

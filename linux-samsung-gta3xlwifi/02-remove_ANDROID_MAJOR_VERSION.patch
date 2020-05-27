@@ -1,0 +1,71 @@
+diff --git a/Kconfig b/Kconfig
+index eebdb816..b038b395 100644
+--- a/Kconfig
++++ b/Kconfig
+@@ -14,6 +14,6 @@ config ANDROID_VERSION
+ 
+ config ANDROID_MAJOR_VERSION
+ 	string
+-	option env="ANDROID_MAJOR_VERSION"
++	default p
+ 
+ source "arch/$SRCARCH/Kconfig"
+diff --git a/drivers/gpu/arm/tMIx/Kconfig b/drivers/gpu/arm/tMIx/Kconfig
+index 6c829d8f..85e77bdf 100644
+--- a/drivers/gpu/arm/tMIx/Kconfig
++++ b/drivers/gpu/arm/tMIx/Kconfig
+@@ -15,7 +15,7 @@
+ 
+ config DDK_VERSION_OS
+ 	string "version"
+-	default ANDROID_MAJOR_VERSION
++	default p
+ 	help
+ 	  Android OS major version
+ 
+diff --git a/drivers/usb/typec/Kconfig b/drivers/usb/typec/Kconfig
+index 7444488b..81ef69aa 100644
+--- a/drivers/usb/typec/Kconfig
++++ b/drivers/usb/typec/Kconfig
+@@ -4,8 +4,6 @@ menu "USB Power Delivery and Type-C drivers"
+ config TYPEC
+ 	tristate
+ 	default y
+-	depends on ANDROID_MAJOR_VERSION != "n"
+-	depends on ANDROID_MAJOR_VERSION != "o"
+ 	depends on CCIC_NOTIFIER
+ 
+ endmenu
+diff --git a/fs/sdcardfs/Kconfig b/fs/sdcardfs/Kconfig
+index a8494806..f52b9e4c 100644
+--- a/fs/sdcardfs/Kconfig
++++ b/fs/sdcardfs/Kconfig
+@@ -2,4 +2,4 @@
+ # Android Sdcardfs configuation
+ #
+ 
+-source "fs/sdcardfs/$ANDROID_MAJOR_VERSION/Kconfig"
++source "fs/sdcardfs/p/Kconfig"
+diff --git a/fs/sdcardfs/Makefile b/fs/sdcardfs/Makefile
+index b2387224..32eadefd 100644
+--- a/fs/sdcardfs/Makefile
++++ b/fs/sdcardfs/Makefile
+@@ -3,4 +3,4 @@
+ #
+ 
+ subdir-ccflags-y += -Ifs
+-obj-y += $(ANDROID_MAJOR_VERSION)/
++obj-y += p/
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index d0fbea22..b335530f 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -171,7 +171,7 @@ dtc_cpp_flags  = -Wp,-MD,$(depfile).pre.tmp -nostdinc                    \
+ 		 -I$(srctree)/drivers/of/testcase-data                   \
+ 		 -undef -D__DTS__                                        \
+ 		 -DANDROID_VERSION=$(ANDROID_VERSION)                    \
+-		 -DANDROID_MAJOR_VERSION=$(ANDROID_MAJOR_VERSION)
++		 -DANDROID_MAJOR_VERSION=p
+ 
+ # Finds the multi-part object the current object will be linked into
+ modname-multi = $(sort $(foreach m,$(multi-used),\

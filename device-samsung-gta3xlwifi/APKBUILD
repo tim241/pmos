@@ -1,0 +1,22 @@
+# Reference: <https://postmarketos.org/devicepkg>
+pkgname=device-samsung-gta3xlwifi
+pkgdesc="Samsung Galaxy Tab A 10.1 (2019)"
+pkgver=0.1
+pkgrel=0
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="postmarketos-base linux-samsung-gta3xlwifi mkbootimg mesa-dri-gallium"
+makedepends="devicepkg-dev"
+source="deviceinfo"
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+}
+
+sha512sums="12f3b56e9c6a06ee94ac44d441265cf3a50412bd0e0b8bcf67c1448e0ccb6a41f3e1c4cd96592a3f0666012082775d5906604cd84592e1c5c33999d8142df53c  deviceinfo"

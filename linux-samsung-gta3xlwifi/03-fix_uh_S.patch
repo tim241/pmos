@@ -1,0 +1,12 @@
+diff --git a/init/_uh.S b/init/_uh.S
+index 714c572d..bbe58d35 100755
+--- a/init/_uh.S
++++ b/init/_uh.S
+@@ -1,6 +1,6 @@
+ #include <linux/uh.h>
+ 
+-#define uh_ELF_PATH "init/uh.elf"
++#define uh_ELF_PATH "../init/uh.elf"
+ 
+ #define SMC_64BIT_RET_MAGIC 0xC2000401
+ 
